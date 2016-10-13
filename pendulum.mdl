@@ -1,0 +1,47 @@
+{
+    "name": "My model",
+    "gravity": [0, 0, -9.81],
+    "bodies": [
+        {
+            "name": "ground",
+            "id": 0,
+            "mass": 2,
+            "cm": 0.3,
+            "Inertia": 
+            "q0": [2, 0, 0],
+            "qd0": [0, 0, 0]
+        },
+        {
+            "name": "first_body",
+            "id": 2,
+            "mass": 3,
+            "jbar": 0.2,
+            "q0": [7, 0, 0],
+            "qd0": [0, 0, 0]
+        }
+    ],
+    "constraints": [
+        {
+            "name": "dp2_1",
+            "id": 1,
+            "bodyi": 1,
+            "bodyj": 2,
+            "type": "DP2",
+            "sPi": [-2, 1, 2],
+            "sQj": [-1, 2, 3],
+            "ai": [0, 0, 0],
+            "fun": "0.1*t + 1/9"
+        },
+        {
+            "name": "cd_1",
+            "id": 2,
+            "bodyi": 2,
+            "bodyj": 1,
+            "type": "CD",
+            "sPi":[1,2,3],
+            "sQj":[3,2,1],
+            "c":[0,1,0],
+            "fun": "0"
+        },
+    ]
+}
