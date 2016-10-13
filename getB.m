@@ -6,4 +6,4 @@ function B = getB(p,a)
 e0 = p(1);
 e = p(2:4);
 
-B = 2*[(e0*eye(3))*a e*a' - (e0*eye(3) + tensor(e))*tensor(a)];
+B = 2*[(e0*eye(3) + tensor(e))*a e*a' - (e0*eye(3) + tensor(e))*tensor(a)];

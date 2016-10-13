@@ -1,6 +1,6 @@
 function [bodies, constraints] = readInput(filename)
 % open input file
-
+fid = fopen(filename);
 % read body parts and assign attributes
 while 1
     tline = fgetl(fid);
@@ -36,13 +36,15 @@ while 1
             mass = str2double(tline(loc_c+1:end-1));
             bodies{id}{2} = mass;
             
-            % find inertia, position, euler parameter and omega
-            for i = 3:6
+            % find inertia, position, position_dt, euler parameter and p_dt
+            for i = 3:7
                 tline = fgetl(fid);
+                
                 loc1 = findstr(tline,'[');
                 loc2 = findstr(tline,']');
                 val = str2num(tline(loc1:loc2));
-                bodies{id}{i} = val;
+                
+                bodies{id}{i} = val';
             end
         end
     end
@@ -97,6 +99,7 @@ while 1
             tline = fgetl(fid);
             loc = findstr(tline, '"');
             type = tline(loc(3)+1:loc(4)-1);
+            constraints{id}{4} = type;
             
             if (strcmp(type,'DP2'))
                 field1 = 'sPi';
@@ -117,8 +120,8 @@ while 1
                 loc2 = findstr(tline,']');
                 val3 = str2num(tline(loc1:loc2));
                 
-                attr = struct(field1, val1, field2, val2, field3, val3);
-                constraints{id}{4} = attr;
+                attr = struct(field1, val1', field2, val2', field3, val3');
+                constraints{id}{5} = attr;
             end
             
             if (strcmp(type,'CD'))
@@ -140,15 +143,15 @@ while 1
                 loc2 = findstr(tline,']');
                 val3 = str2num(tline(loc1:loc2));
                 
-                attr = struct(field1, val1, field2, val2, field3, val3);
-                constraints{id}{4} = attr;
+                attr = struct(field1, val1', field2, val2', field3, val3');
+                constraints{id}{5} = attr;
             end
             
             tline = fgetl(fid);
             loc = findstr(tline,'"');
             if (strcmp('fun', tline(loc(1)+1:loc(2)-1)))
                 func = eval(['@(t)',tline(loc(3)+1:loc(4)-1)]);
-                constraints{id}{5} = func;
+                constraints{id}{6} = func;
             end
             
         end
