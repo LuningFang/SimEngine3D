@@ -17,13 +17,9 @@ pj = body_info{j}{6};
 pi_dt = body_info{i}{7};
 pj_dt = body_info{j}{7};
 
-omic_i = getOmic(pi, pi_dt,0);
+[omic_i,~,Ai] = getOmic(pi, pi_dt);
 
-omic_j = getOmic(pj, pj_dt,0);
-
-Ai = getA(pi);
-Aj = getA(pj);
-
+[omic_j,~,Aj] = getOmic(pj, pj_dt);
 
 %    end
 % need input for f_dt_dt
@@ -44,10 +40,8 @@ if (strcmp(type,'DP2'))
     dij = rj + Aj*sQj - (ri + Ai*sPi);
     dij_dt = rj_dt + getB(pj, sQj)*pj_dt - ri_dt - getB(pi, sPi)*pi_dt;
     
-    test1 = getB(pj, sQj)*pj_dt
-    
-    dij_dt2 = rj_dt + Aj*tensor(omic_j)*sQj - ri_dt - Ai*tensor(omic_i)*sPi;
-    test_2 = Aj*tensor(omic_j)*sQj
+    dij_dt = rj_dt + Aj*tensor(omic_j)*sQj - ri_dt - Ai*tensor(omic_i)*sPi;
+
     results.phi = aibar'*Ai'*dij - ft(t);
     
     
@@ -58,7 +52,8 @@ if (strcmp(type,'DP2'))
           - dij'*Ai*tensor(omic_i)*tensor(omic_i)*aibar ...
           + f_dt_dt;
       
-     gamma_hat = -ai'*getB(pj_dt, sQj)*pj_dt + ai'*getB(pi_dt, sPi)*pi_dt - dij'*getB(pi_dt,aibar)*pi_dt - 2*ai_dt'*dij_dt + f_dt_dt;
+     gamma_hat = -ai'*getB(pj_dt, sQj)*pj_dt + ai'*getB(pi_dt, sPi)*pi_dt ...
+                - dij'*getB(pi_dt,aibar)*pi_dt - 2*ai_dt'*dij_dt + f_dt_dt;
       
      results.phi_ri = -aibar';
      results.phi_rj = aibar';

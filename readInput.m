@@ -101,6 +101,31 @@ while 1
             type = tline(loc(3)+1:loc(4)-1);
             constraints{id}{4} = type;
             
+            % parse file for DP1 constraint
+            if (strcmp(type,'DP2'))
+                field1 = 'sPi';
+                field2 = 'sQj';
+                field3 = 'ai';
+                tline = fgetl(fid);
+                loc1 = findstr(tline,'[');
+                loc2 = findstr(tline,']');
+                val1 = str2num(tline(loc1:loc2));
+                
+                tline = fgetl(fid);
+                loc1 = findstr(tline,'[');
+                loc2 = findstr(tline,']');
+                val2 = str2num(tline(loc1:loc2));
+                
+                tline = fgetl(fid);
+                loc1 = findstr(tline,'[');
+                loc2 = findstr(tline,']');
+                val3 = str2num(tline(loc1:loc2));
+                
+                attr = struct(field1, val1', field2, val2', field3, val3');
+                constraints{id}{5} = attr;
+            end
+            
+            % parse file for DP2 constraint
             if (strcmp(type,'DP2'))
                 field1 = 'sPi';
                 field2 = 'sQj';
