@@ -65,7 +65,6 @@ while 1
     if strcmp(tline, '    ]')
         break;
     end
-    %    tline = fgetl(fid);
     while 1
         if strcmp(tline, '        },')
             break;
@@ -102,26 +101,19 @@ while 1
             constraints{id}{4} = type;
             
             % parse file for DP1 constraint
-            if (strcmp(type,'DP2'))
-                field1 = 'sPi';
-                field2 = 'sQj';
-                field3 = 'ai';
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val1 = str2num(tline(loc1:loc2));
+            if (strcmp(type,'DP1'))
+                field1 = 'ai';
+                field2 = 'aj';
                 
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val2 = str2num(tline(loc1:loc2));
                 
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val3 = str2num(tline(loc1:loc2));
+                for i = 1:2
+                    tline = fgetl(fid);
+                    loc1 = findstr(tline,'[');
+                    loc2 = findstr(tline,']');
+                    val1{i} = str2num(tline(loc1:loc2));
+                end
                 
-                attr = struct(field1, val1', field2, val2', field3, val3');
+                attr = struct(field1, val1{1}', field2, val1{2}');
                 constraints{id}{5} = attr;
             end
             
@@ -130,45 +122,28 @@ while 1
                 field1 = 'sPi';
                 field2 = 'sQj';
                 field3 = 'ai';
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val1 = str2num(tline(loc1:loc2));
-                
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val2 = str2num(tline(loc1:loc2));
-                
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val3 = str2num(tline(loc1:loc2));
-                
-                attr = struct(field1, val1', field2, val2', field3, val3');
+                for i = 1:3
+                    tline = fgetl(fid);
+                    loc1 = findstr(tline,'[');
+                    loc2 = findstr(tline,']');
+                    val{i} = str2num(tline(loc1:loc2));
+                end
+                attr = struct(field1, val{1}', field2, val{2}', field3, val{3}');
                 constraints{id}{5} = attr;
             end
             
+            % parse file for CD constraint
             if (strcmp(type,'CD'))
                 field1 = 'sPi';
                 field2 = 'sQj';
                 field3 = 'c';
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val1 = str2num(tline(loc1:loc2));
-                
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val2 = str2num(tline(loc1:loc2));
-                
-                tline = fgetl(fid);
-                loc1 = findstr(tline,'[');
-                loc2 = findstr(tline,']');
-                val3 = str2num(tline(loc1:loc2));
-                
-                attr = struct(field1, val1', field2, val2', field3, val3');
+                for i = 1:3
+                    tline = fgetl(fid);
+                    loc1 = findstr(tline,'[');
+                    loc2 = findstr(tline,']');
+                    val{i} = str2num(tline(loc1:loc2));
+                end
+                attr = struct(field1, val{1}', field2, val{2}', field3, val{3}');
                 constraints{id}{5} = attr;
             end
             
@@ -178,6 +153,7 @@ while 1
                 func = eval(['@(t)',tline(loc(3)+1:loc(4)-1)]);
                 constraints{id}{6} = func;
             end
+            
             
         end
     end

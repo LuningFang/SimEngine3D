@@ -21,13 +21,35 @@ pj_dt = body_info{j}{7};
 
 [omic_j,~,Aj] = getOmic(pj, pj_dt);
 
-%    end
 % need input for f_dt_dt
 f_dt_dt = 0;
 
 
 % assume t = 0.1, take care of this later
 t = 0.1;
+
+if (strcmp(type,'DP1'))
+    aibar = attr.ai;
+    ai = Ai*aibar;
+    ai_dt = getB(pi,aibar) * pi_dt;
+
+    ajbar = attr.aj;
+    aj = Ai*ajbar;
+    aj_dt = getB(pj,ajbar) * pj_dt;
+    
+    results.gamma = -ai'*getB(pj_dt, ajbar)*pj_dt ...
+        -aj'*getB(pi_dt, aibar)*pi_dt ...-
+        -2*ai_dt'*aj_dt + f_dt_dt;
+    
+    results.phi = ai'*aj - ft(t);
+    
+    results.phi_ri = zeros(1,3);
+    results.phi_rj = zeros(1,3);
+    results.phi_pi = aj'*getB(pi,aibar);
+    results.phi_pj = ai'*getB(pj,ajbar);
+    
+end
+
 
 % do something about ground!!!
 if (strcmp(type,'DP2'))
@@ -39,8 +61,6 @@ if (strcmp(type,'DP2'))
     
     dij = rj + Aj*sQj - (ri + Ai*sPi);
     dij_dt = rj_dt + getB(pj, sQj)*pj_dt - ri_dt - getB(pi, sPi)*pi_dt;
-    
-    dij_dt = rj_dt + Aj*tensor(omic_j)*sQj - ri_dt - Ai*tensor(omic_i)*sPi;
 
     results.phi = aibar'*Ai'*dij - ft(t);
     
@@ -52,12 +72,27 @@ if (strcmp(type,'DP2'))
           - dij'*Ai*tensor(omic_i)*tensor(omic_i)*aibar ...
           + f_dt_dt;
       
-     gamma_hat = -ai'*getB(pj_dt, sQj)*pj_dt + ai'*getB(pi_dt, sPi)*pi_dt ...
-                - dij'*getB(pi_dt,aibar)*pi_dt - 2*ai_dt'*dij_dt + f_dt_dt;
-      
      results.phi_ri = -aibar';
      results.phi_rj = aibar';
      results.phi_pi = dij'*getB(pi,aibar) - aibar'*getB(pi,sPi);
      results.phi_pj = aibar'*getB(pj,sQj);
      
+end
+
+% implement CD constraint
+if (strcmp(type,'CD'))
+    sPi = attr.sPi;
+    sQj = attr.sQj;
+    c = attr.c;
+    
+    dij = rj + Aj*sQj - (ri + Ai*sPi);
+    results.phi = c'*dij;
+    results.gamma = c'*getB(pi_dt, sPi)*pi_dt...
+                   -c'*getB(pj_dt, sQj)*pj_dt + f_dt_dt;
+    gamma2 = c'*(Ai*tensor(omic_i)*tensor(omic_i)*sPi ... 
+               - Aj*tensor(omic_j)*tensor(omic_j)*sQj) +f_dt_dt;
+    results.phi_ri = -c';
+    results.phi_rj =  c';
+    results.phi_pi = -c'*getB(pi,sPi);
+    results.phi_pj =  c'*getB(pj,sQj);
 end

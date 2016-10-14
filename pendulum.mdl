@@ -25,14 +25,13 @@
     ],
     "constraints": [
         {
-            "name": "dp2_1",
+            "name": "dp1_1",
             "id": 1,
             "bodyi": 1,
             "bodyj": 2,
-            "type": "DP2",
-            "sPi": [-2, 1, 2],
-            "sQj": [-1, 2, 3],
+            "type": "DP1",
             "ai": [1, 2, 3],
+            "aj": [2,3,4],
             "fun": "0.1*t + 1/9",
             "fun_dt": "0.1",
             "fun_dtdt": "0"
