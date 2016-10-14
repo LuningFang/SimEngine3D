@@ -9,9 +9,4 @@ Gamma = zeros(numC,1);
 
 for i = 1:numC
 results = GCons(i, constraints, bodies);
-Phi(i) = results.phi;
-Gamma(i) = results.gamma;
 end
-
-Phi
-Gamma

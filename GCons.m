@@ -7,23 +7,26 @@ j = constraint_info{num}{3};
 attr = constraint_info{num}{5};
 ft = constraint_info{num}{6};
 
-%    if (i ~= 0 && j ~= 0)
+% get position, euler parameters and orientation of body i
 ri = body_info{i}{4};
-rj = body_info{j}{4};
 ri_dt = body_info{i}{5};
-rj_dt = body_info{j}{5};
 pi = body_info{i}{6};
-pj = body_info{j}{6};
 pi_dt = body_info{i}{7};
-pj_dt = body_info{j}{7};
-
 [omic_i,~,Ai] = getOmic(pi, pi_dt);
 
-[omic_j,~,Aj] = getOmic(pj, pj_dt);
+% handle the ground body where j = 0
+if (j ~= 0)
+    rj = body_info{j}{4};
+    rj_dt = body_info{j}{5};
+    pj = body_info{j}{6};
+    pj_dt = body_info{j}{7};
+    [omic_j,~,Aj] = getOmic(pj, pj_dt);
+else
+    rj = [0, 0, 0]';
+end
 
 % need input for f_dt_dt
 f_dt_dt = 0;
-
 
 % assume t = 0.1, take care of this later
 t = 0.1;
@@ -38,7 +41,7 @@ if (strcmp(type,'DP1'))
     aj_dt = getB(pj,ajbar) * pj_dt;
     
     results.gamma = -ai'*getB(pj_dt, ajbar)*pj_dt ...
-        -aj'*getB(pi_dt, aibar)*pi_dt ...-
+        -aj'*getB(pi_dt, aibar)*pi_dt ...
         -2*ai_dt'*aj_dt + f_dt_dt;
     
     results.phi = ai'*aj - ft(t);
@@ -50,8 +53,6 @@ if (strcmp(type,'DP1'))
     
 end
 
-
-% do something about ground!!!
 if (strcmp(type,'DP2'))
     aibar = attr.ai;
     ai = Ai*aibar;
@@ -81,18 +82,31 @@ end
 
 % implement CD constraint
 if (strcmp(type,'CD'))
-    sPi = attr.sPi;
-    sQj = attr.sQj;
-    c = attr.c;
-    
-    dij = rj + Aj*sQj - (ri + Ai*sPi);
-    results.phi = c'*dij;
-    results.gamma = c'*getB(pi_dt, sPi)*pi_dt...
-                   -c'*getB(pj_dt, sQj)*pj_dt + f_dt_dt;
-    gamma2 = c'*(Ai*tensor(omic_i)*tensor(omic_i)*sPi ... 
-               - Aj*tensor(omic_j)*tensor(omic_j)*sQj) +f_dt_dt;
-    results.phi_ri = -c';
-    results.phi_rj =  c';
-    results.phi_pi = -c'*getB(pi,sPi);
-    results.phi_pj =  c'*getB(pj,sQj);
+    % consider the case where body j is not the gound
+    if (j ~= 0)
+        sPi = attr.sPi;
+        sQj = attr.sQj;
+        c = attr.c;
+        dij = rj + Aj*sQj - (ri + Ai*sPi);
+        results.phi = c'*dij - ft(t);
+        results.gamma = c'*getB(pi_dt, sPi)*pi_dt...
+            -c'*getB(pj_dt, sQj)*pj_dt + f_dt_dt;
+        
+        results.phi_ri = -c';
+        results.phi_rj =  c';
+        results.phi_pi = -c'*getB(pi,sPi);
+        results.phi_pj =  c'*getB(pj,sQj);
+    else
+        % body j is the ground
+        sPi = attr.sPi;
+        c = attr.c;
+        dij = rj - (ri + Ai*sPi);
+        results.phi = c'*dij - ft(t);
+        results.gamma = c'*getB(pi_dt, sPi)*pi_dt + f_dt_dt;
+        results.phi_ri = -c';
+        results.phi_pi = -c'*getB(pi,sPi);
+        % remove field of dPhi wrt rj and pj
+        fields = {'phi_rj', 'phi_pj'};
+        results = rmfield(results, fields);
+    end
 end
