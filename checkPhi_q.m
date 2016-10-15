@@ -27,7 +27,5 @@ for i = 1:4
     Phi_q_approx(:,i+3) = (Phi_new - Phi)/delta;
 end
 
-Phi_q
-Phi_q_approx
-
+fprintf('differnce between approximated Phi_q and analytical Phi_q: \n');
 Phi_q - Phi_q_approx

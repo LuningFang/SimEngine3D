@@ -24,3 +24,16 @@ for k = 1:numC
     end
     
 end
+
+% add p'*p = 1 constraints
+
+for m = 1:numB
+    p = bodies{1}{6};
+    dp = bodies{1}{7};
+    Phi = [Phi; p'*p - 1];
+    Phi_p = zeros(1, 7*numB);
+    Phi_p(3*numB+4*(m-1)+1:3*numB+4*m) = 2*p';
+    Phi_q = [Phi_q; Phi_p];
+    Nu = [Nu; 0];
+    Gamma = [Gamma; -2*dp'*dp];
+end
