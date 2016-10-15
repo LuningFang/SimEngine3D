@@ -1,6 +1,6 @@
 [bodies, constraints] = readInput('revJoint.mdl');
 
-numC = 3; % total number of constraints
+numC = 6; % total number of constraints
 numB = 1; % total number of bodies
 Phi = zeros(numC,1);
 Phi_q = zeros(numC, 7*numB);

@@ -155,20 +155,6 @@ while 1
             end
             
             tline = fgetl(fid);
-            loc = findstr(tline,'"');
-            if (strcmp('fun_dt', tline(loc(1)+1:loc(2)-1)))
-                func = eval(['@(t)',tline(loc(3)+1:loc(4)-1)]);
-                constraints{id}{7} = func;
-            end
-            
-            tline = fgetl(fid);
-            loc = findstr(tline,'"');
-            if (strcmp('fun_dtdt', tline(loc(1)+1:loc(2)-1)))
-                func = eval(['@(t)',tline(loc(3)+1:loc(4)-1)]);
-                constraints{id}{8} = func;
-            end            
-            %% added
-            tline = fgetl(fid);
         end
     end
     tline = fgetl(fid);
