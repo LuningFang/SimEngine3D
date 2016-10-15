@@ -1,3 +1,5 @@
+% TODO: separate constraints and bodies, so that I can
+% assign the initial condition of the bodies in a .m file
 function [bodies, constraints] = readInput(filename)
 % open input file
 fid = fopen(filename);
@@ -42,7 +44,7 @@ while 1
                 
                 loc1 = findstr(tline,'[');
                 loc2 = findstr(tline,']');
-                val = str2num(tline(loc1:loc2));
+                val = eval(tline(loc1:loc2));
                 
                 bodies{id}{i} = val';
             end

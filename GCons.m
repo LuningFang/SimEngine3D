@@ -38,7 +38,7 @@ if (j ~= 0)
     pj_dt = body_info{j}{7};
 else
     % ground body
-    rj = [0, 0, 0]';
+    rj = [0, 0, 0]';  % origin of GRF
     rj_dt = [0, 0, 0]';
     pj = [1, 0, 0, 0]';
     pj_dt = [0, 0, 0, 0]';
@@ -104,6 +104,7 @@ if (strcmp(type,'DP2'))
 end
 
 % implement CD constraint
+% TODO: rewrite the part that handle the ground body
 if (strcmp(type,'CD'))
     % consider the case where body j is not the gound
     if (j ~= 0)
