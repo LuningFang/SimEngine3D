@@ -1,17 +1,16 @@
-[bodies, constraints] = readInput('revJoint.mdl');
+bodies = loadBodies('revJoint.mdl');
+constraints = loadConstraints('revJoint.mdl');
 
 numC = 6; % total number of constraints
 numB = 1; % total number of bodies
-Phi = zeros(numC,1);
-Phi_q = zeros(numC, 7*numB);
-Mu = zeros(numC,1);
-Gamma = zeros(numC,1);
 
-for i = 1:numC
-results = GCons(i, constraints, bodies);
-Phi(i) = results.phi;
-Gamma(i) = results.gamma;
-end
+[Phi, ~, ~, Phi_q] = getPhi_RHS(bodies, constraints, numB, numC);
 
-Phi
-Gamma
+delta = 1e-3;
+newbodies = bodies;
+%newbodies{1}{4} = newbodies{1}{4} + delta*[1;0;0];
+newbodies{1}{6} = newbodies{1}{6} + delta*[1;0;0;0];
+[Phi_new, ~, ~, ~] = getPhi_RHS(newbodies, constraints, numB, numC);
+
+Phi_q_approx = (Phi_new - Phi)/delta
+Phi_q(:,4)

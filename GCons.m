@@ -1,6 +1,6 @@
 function results = GCons(num, constraint_info, body_info)
 % assume time = 0.1, take care of this later
-time = 0.01;
+time = 0;
 
 results = struct('i', 0, 'j', 0, 'phi',0, 'nu', 0, 'gamma', 0, 'phi_ri', zeros(1,3), 'phi_rj', zeros(1,3), 'phi_pi', zeros(1,4), 'phi_pj', zeros(1,4));
 
@@ -22,6 +22,9 @@ ftdtdt = diff(ft, t, 2);
 ft_v = ft(time);
 ftdt_v = vpa(subs(ftdt, t, time));
 ftdtdt_v = vpa(subs(ftdtdt, t, time));
+
+% return nu
+results.nu = ftdt_v;
 
 % get position, euler parameters and orientation of body i
 ri = body_info{i}{4};
@@ -55,7 +58,7 @@ if (strcmp(type,'DP1'))
     ai_dt = getB(pi,aibar) * pi_dt;
 
     ajbar = attr.aj;
-    aj = Ai*ajbar;
+    aj = Aj*ajbar;
     aj_dt = getB(pj,ajbar) * pj_dt;
     
     results.gamma = -ai'*getB(pj_dt, ajbar)*pj_dt ...
