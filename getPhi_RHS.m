@@ -1,4 +1,7 @@
-function [Phi, Nu, Gamma, Phi_q] = getPhi_RHS(bodies, constraints, numB, numC)
+function [Phi, Nu, Gamma, Phi_q] = getPhi_RHS(bodies, constraints, time)
+
+[~, numC] = size(constraints); % total number of constraints
+[~, numB] = size(bodies); % total number of bodies
 Phi = zeros(numC,1);
 Phi_q = zeros(numC, 7*numB);
 Nu = zeros(numC,1);
@@ -7,7 +10,7 @@ Gamma = zeros(numC,1);
 % Phi_q
 % [Phi_r1 Phi_r2 ... Phi_rb Phi_p1 Phi_p2 ... Phi_pb]
 for k = 1:numC
-    results = GCons(k, constraints, bodies);
+    results = GCons(k, constraints, bodies, time);
     Phi(k) = results.phi;
     Gamma(k) = results.gamma;
     Nu(k) = results.nu;
