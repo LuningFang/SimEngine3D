@@ -1,5 +1,4 @@
 function results = GCons(num, constraint_info, body_info, time)
-
 results = struct('i', 0, 'j', 0, 'phi',0, 'nu', 0, 'gamma', 0, 'phi_ri', zeros(1,3), 'phi_rj', zeros(1,3), 'phi_pi', zeros(1,4), 'phi_pj', zeros(1,4));
 
 type = constraint_info{num}{4};
@@ -7,19 +6,17 @@ i = constraint_info{num}{2};
 j = constraint_info{num}{3};
 attr = constraint_info{num}{5};
 ft = constraint_info{num}{6};
+ftdt = constraint_info{num}{7};
+ftdtdt = constraint_info{num}{8};
 
 results.i = i;
 results.j = j;
 
-% evaluate derivatives of ft
-syms t
-ftdt = diff(ft, t, 1);
-ftdtdt = diff(ft, t, 2);
 
 % calculate derivatives of ft at time t
 ft_v = ft(time);
-ftdt_v = vpa(subs(ftdt, t, time));
-ftdtdt_v = vpa(subs(ftdtdt, t, time));
+ftdt_v = ftdt(time);
+ftdtdt_v = ftdtdt(time);
 
 % return nu
 results.nu = ftdt_v;
@@ -79,13 +76,10 @@ end
 
 if (strcmp(type,'DP2'))
     aibar = attr.ai;
-    ai = Ai*aibar;
-    ai_dt = getB(pi,aibar) * pi_dt;
     sPi = attr.sPi;
     sQj = attr.sQj;
     
     dij = rj + Aj*sQj - (ri + Ai*sPi);
-    dij_dt = rj_dt + getB(pj, sQj)*pj_dt - ri_dt - getB(pi, sPi)*pi_dt;
 
     results.phi = aibar'*Ai'*dij - ft_v;
     

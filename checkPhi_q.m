@@ -28,4 +28,4 @@ for i = 1:4
 end
 
 fprintf('differnce between approximated Phi_q and analytical Phi_q: \n');
-Phi_q - Phi_q_approx
+norm(Phi_q - Phi_q_approx);

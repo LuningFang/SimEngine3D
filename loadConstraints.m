@@ -105,6 +105,11 @@ while 1
             if (strcmp('fun', tline(loc(1)+1:loc(2)-1)))
                 func = eval(['@(t)',tline(loc(3)+1:loc(4)-1)]);
                 constraints{id}{6} = func;
+                syms t;
+                ftdt = diff(func, t);
+                ftddt = diff(ftdt, t);
+                constraints{id}{7} = eval(['@(t)', char(ftdt)]);
+                constraints{id}{8} = eval(['@(t)', char(ftddt)]);
             end
             
             tline = fgetl(fid);

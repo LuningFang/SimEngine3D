@@ -8,20 +8,18 @@ for i = 1:numB
     q0(3*numB+(i-1)*4+1:3*numB+i*4) = bodyInfo{i}{6};   
 end
 
-q0
-
 err = 100;
 itr = 1;
 qk = q0;
 while abs(err) > tol
     [Phi, ~, ~, Phi_q] = getPhi_RHS(bodyInfo, constraints, t_curr);
     
-    qnew = qk - inv(Phi_q)*Phi;
+    qnew = qk - Phi_q\Phi;
     err = norm(qnew - qk,2);
     
 
 %    fprintf('%d,%f,%f,%.10g,%.10g\n', itr, xk, fk, xk -1.1347241384, err);
-    fprintf('%d, %.10g\n', itr, err);
+%    fprintf('%d, %.10g\n', itr, err);
     
     
     qk = qnew;
