@@ -1,4 +1,5 @@
 function results = GCons(num, constraint_info, body_info, time)
+
 results = struct('i', 0, 'j', 0, 'phi',0, 'nu', 0, 'gamma', 0, 'phi_ri', zeros(1,3), 'phi_rj', zeros(1,3), 'phi_pi', zeros(1,4), 'phi_pj', zeros(1,4));
 
 type = constraint_info{num}{4};

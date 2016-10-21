@@ -1,6 +1,21 @@
 function bodies = loadBodies(filename)
+global numB
 % open input file
 fid = fopen(filename);
+
+% read total number of bodies to allocate
+% memory space for bodies cell
+while 1
+    tline = fgetl(fid);
+    if (~isempty(strfind(tline, 'numB')))
+        break;
+    end
+end
+loc = strfind(tline, ':');
+numB = str2num(tline(loc+1:end-1));
+
+bodies = cell(numB, 7);
+
 % read body parts and assign attributes
 while 1
     tline = fgetl(fid);
@@ -9,7 +24,6 @@ while 1
     end
 end
 
-bodies{1}{1} = 'haha';
 
 while 1
     if strcmp(tline, '    ],')

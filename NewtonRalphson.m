@@ -1,6 +1,6 @@
 function q = NewtonRalphson(bodies, constraints, t_curr, tol)
+global numB
 bodyInfo = bodies;
-[~, numB] = size(bodyInfo);
 
 q0 = zeros(7*numB,1);
 for i = 1:numB

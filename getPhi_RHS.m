@@ -1,7 +1,6 @@
 function [Phi, Nu, Gamma, Phi_q] = getPhi_RHS(bodies, constraints, time)
+global numB numC
 
-[~, numC] = size(constraints); % total number of constraints
-[~, numB] = size(bodies); % total number of bodies
 % dimension of Phi, including p'p-1
 Phi = zeros(numC+numB,1);
 Phi_q = zeros(numC+numB, 7*numB);
